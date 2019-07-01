@@ -1,0 +1,50 @@
+version: "2.1"
+
+services:
+    nginx:
+        build: ./webserver/
+        container_name: webserver
+        ports:
+            - 8080:80
+        volumes:
+            - "./backend:/var/www/html:ro"
+        links:
+            - php
+            - mysql
+        depends_on:
+            - composer
+    php:
+        build: ./app/
+        container_name: app
+        expose:
+            - 9000
+        volumes:
+            - "./backend:/var/www/html"
+        working_dir: /var/www/html
+        depends_on:
+            - mysql
+        dns:
+            - 8.8.8.8
+            - 4.4.4.4
+    mysql:
+        build: ./db/
+        container_name: db
+        ports:
+            - 3306:3306
+        dns_search: mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: "root"
+            MYSQL_DATABASE: "orders_db"
+        restart: always
+
+
+    composer:
+        container_name: order_composer
+        restart: 'no'
+        image: koutsoumpos89/composer-php7.1
+        working_dir: /var/www/html
+        volumes:
+            - "./backend:/var/www/html"
+volumes:
+    db-data:
+      driver: local
