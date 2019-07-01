@@ -51,7 +51,7 @@ class OrderController extends Controller
             } else {
                 return $this->responseHelper->errorResponse($this->orderService->error, $this->orderService->errorCode);
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Error: ' . $e->getMessage());
             return $this->responseHelper->errorResponse($e->getMessage(), JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -97,7 +97,7 @@ class OrderController extends Controller
             } else {
                 return $this->responseHelper->errorResponse('ALREADY_TAKEN', JsonResponse::HTTP_CONFLICT);
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Error: ' . $e->getMessage());
             return $this->responseHelper->errorResponse($e->getMessage(), JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -117,7 +117,7 @@ class OrderController extends Controller
             $orders = $this->orderService->getList($page, $limit);
 
             return $this->responseHelper->successResponse('Success', JsonResponse::HTTP_OK, $orders);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Error: ' . $e->getMessage());
             return $this->responseHelper->errorResponse($e->getMessage(), JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }

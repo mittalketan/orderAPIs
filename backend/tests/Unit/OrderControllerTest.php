@@ -166,6 +166,37 @@ class OrderControllerTest extends TestCase
     }
 
     /**
+     * Controller::OrderController - Method::store Negative Test Case
+     *
+     * @return void
+     */
+    public function testStore_NegativeTestCase_validCoodinates_NoResponse()
+    {
+        echo "\n *** Unit Test - Controller::OrderController - Method::store -  Negative Test Case - *** \n";
+
+        $order = $this->generateDummyOrder();
+
+        $params = [
+            'origin'      => [strval($this->faker->latitude()), strval($this->faker->longitude())],
+            'destination' => [strval($this->faker->latitude()), strval($this->faker->longitude())],
+        ];
+
+        //Order Service will return failure
+        $this->orderService
+            ->shouldReceive('createNewOrder')
+            ->andReturn(false);
+
+        $this->orderService->error     = 'GOOGLE_MAP_API_NO_RESPONSE';
+        $this->orderService->errorCode = JsonResponse::HTTP_INTERNAL_SERVER_ERROR;
+
+        $response = $this->call('POST', '/orders', $params);
+        $data     = (array) $response->getData();
+        $response->assertStatus(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        $this->assertInternalType('array', $data);
+        $this->assertArrayHasKey('error', $data);
+    }
+
+    /**
      * Controller::OrderController - Method:takeOrder Positive Test Case
      *
      * @return void
